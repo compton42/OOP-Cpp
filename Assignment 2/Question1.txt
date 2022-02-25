@@ -1,0 +1,356 @@
+/*******************************
+***  Assignment 2 Question 1 ***
+******  by Peter Compton  ******
+*******************************/
+
+
+/**
+ * This program will assign seats for a commercial airplane. The airplane has 13 rows with 6
+ * seats in each row. Rows 1 and 2 are first class, rows 3 through 7 are business class,  
+ * and rows 8 through 13 are economy class. This rogram requires user input for their ticket
+ * type and their desired seat.
+ */
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+// Function Prototypes -------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
+void createPlan(char array[14][20]);
+void displayLayout(char array[14][20]);
+string ticketType();
+bool reserveSeat();
+bool reserveAgain();
+int rowNum(string ticket); 
+int seatNumber();
+bool checkSeat(char array[14][20],int R, int C);
+void updateLayout(char array[14][20],int R, int C); 
+void seatOccupied(char array[14][20]);
+// ---------------------------------------------------------------------------------------------
+
+/** 
+* The main function calls each of the other functions to control the sequence of the program.
+*
+*/
+int main(){
+    // Declare Variables
+    string ticket;
+    int rowNumber;
+    int seat;
+    const int rows = 14;
+    const int columns = 20;
+    char charArray [rows][columns];
+
+    // Create and display the character array that represents the seating plan
+    createPlan(charArray);
+    displayLayout(charArray);
+
+    // Check if user wants to reserve a seat
+    if(reserveSeat()){
+
+        // Get seating information from the user
+        ticket = ticketType();
+        rowNumber = rowNum(ticket);
+        seat = seatNumber();
+
+        // Check if seat is already occupied, prompt user for new input if true
+        while (checkSeat(charArray,rowNumber,seat)){
+            seatOccupied(charArray);
+            rowNumber = rowNum(ticket);
+            seat = seatNumber();
+        }
+
+        // Update and display new seating plan
+        updateLayout(charArray,rowNumber, seat);
+        displayLayout(charArray);
+
+        // Check if user wants to reserve another seat
+        while(reserveAgain()){
+
+            // Get seating information from the user
+            ticket = ticketType();
+            rowNumber = rowNum(ticket);
+            seat = seatNumber();
+
+            // Check if seat is already occupied, prompt user for new input if true
+            while (checkSeat(charArray,rowNumber,seat)){
+                seatOccupied(charArray);
+                rowNumber = rowNum(ticket);
+                seat = seatNumber();
+            }
+
+            // Update and display new seating plan
+            updateLayout(charArray,rowNumber, seat);
+            displayLayout(charArray);
+        }
+    }   
+    else{
+        exit(2);
+    }
+    return 0;
+}
+
+
+// Function Area -------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------
+
+/** 
+* The createPlan function builds a character array that represents the seating plan
+*
+* @param charArray - a character array that will be modified into the seating plan
+*/
+void createPlan(char charArray[14][20]){
+string row1 = "        A B C  D E F";
+    for(int i=0;i<1;i++){
+        for(int j =0;j<20;j++){
+            charArray[i][j] = row1[j];
+        }
+    }
+    for(int i=1;i<14;i++){
+        for(int j =0;j<20;j++){
+            charArray[i][0] = 'R';
+            charArray[i][1] = 'o';
+            charArray[i][2] = 'w';
+            charArray[i][3] = ' ';
+            if(i > 9){
+                charArray[i][4] = '1';
+            }
+            else{
+                charArray[i][4] = ' ';
+            }
+            if(i > 9){
+                charArray[i][5] = '0'+i-10;
+            }
+            else{
+            charArray[i][5] = '0'+ i;
+            }
+            charArray[i][6] = ' ';
+            charArray[i][7] = ' ';
+            charArray[i][8] = '*';
+            charArray[i][9] = ' ';
+            charArray[i][10] = '*';
+            charArray[i][11] = ' ';
+            charArray[i][12] = '*';
+            charArray[i][13] = ' ';
+            charArray[i][14] = ' ';
+            charArray[i][15] = '*';
+            charArray[i][16] = ' ';
+            charArray[i][17] = '*';
+            charArray[i][18] = ' ';
+            charArray[i][19] = '*';
+        }   
+    }
+}
+
+/** 
+* The ticketType function determined which ticket the user would like
+* This function includes input validation to ensure correct program operation
+*
+* @return - a user defined type call ticketClass. This type is defined under Global Constants
+*/
+string ticketType(){
+    string ticket;
+    char ticketCode;
+    cout << "Please enter the ticket type: F/f for First Class, B/b for Business Class or E/e for Economy Class. ";
+    cin >> ticketCode;
+    while(!(toupper(ticketCode) == 'F' || toupper(ticketCode) == 'B' || toupper(ticketCode) == 'E')){
+        cout << "Your selection is invalid, please try again." << endl;
+        cout << "Please enter the ticket type: F/f for First Class, B/b for Business Class or E/e for Economy Class. ";
+        cin >> ticketCode;
+    }
+    switch (ticketCode){
+        case 'F':
+        case 'f': ticket = "firstClass";
+        break;
+        case 'B':
+        case 'b': ticket = "businessClass";
+        break;
+        case 'E':
+        case 'e': ticket = "economyClass";
+        break;
+    }
+    return ticket;
+}
+
+/** 
+* The reserveSeat function determines if the user would like to reserve a seat
+* This function includes input validation to ensure correct program operation
+*
+* @return - a boolean value, true if the user would like to reserve a seat
+*/
+ bool reserveSeat(){
+     char selection;
+     cout << "To reserve a seat enter Y/y for yes or N/n for no: ";
+     cin >> selection;
+     cout << endl;
+     while(!(toupper(selection) == 'Y' || toupper(selection) == 'N')){
+        cout << "Your selection is invalid, please try again." << endl;
+        cout << "To reserve a seat enter Y/y for yes or N/n for no: ";
+        cin >> selection;
+     }
+     return (selection == 'Y' || selection == 'y');
+ }
+
+/** 
+* The reserveAgain function determines if the user would like to reserve another seat
+* This function includes input validation to ensure correct program operation
+*
+* @return - a boolean value, true if the user would like to reserve another seat
+*/
+bool reserveAgain(){
+     char selection;
+     cout << "Would you like to reserve another seat? Enter Y/y for yes or N/n for no: ";
+     cin >> selection;
+     while(!(toupper(selection) == 'Y' || toupper(selection) == 'N')){
+        cout << "Your selection is invalid, please try again." << endl;
+        cout << "To reserve another seat enter Y/y for yes or N/n for no: ";
+        cin >> selection;
+     }
+     return (selection == 'Y' || selection == 'y');
+ }
+
+/** 
+* The rowNum function determines which row the user would like to sit in based on their ticket type
+* This function includes input validation to ensure correct program operation
+*
+* @param ticket - the ticket type that the user has selected
+* @return - an integer value of the row the user would like to sit in
+*/
+int rowNum(string ticket){
+    int row;
+    if(ticket == "firstClass" ){
+        cout << "Please select the row you would like, 1 or 2. ";
+        cin >> row;  
+        cout << endl;
+        while (!(row == 1 || row ==2)){
+            cout << "Selection invalid. Please select the row you would like, 1 or 2. ";
+            cin >> row;
+            cout << endl;
+        }
+    }
+    else if (ticket == "businessClass"){
+        cout << "Please select the row you would like, 3 through 7. ";
+        cin >> row;  
+        cout << endl;
+        while (!(row==3||row==4||row==5||row==6||row==7)){
+            cout << "Selection invalid. Please select the row you would like, 3 through 7. ";
+            cin >> row;
+            cout << endl;
+        }
+    }
+    else if (ticket == "economyClass"){ 
+        cout << "Please select the row you would like, 8 through 13. ";
+        cin >> row;  
+        cout << endl;
+        while (!(row==8||row==9||row==10||row==11||row==12||row==13)){
+            cout << "Selection invalid. Please select the row you would like, 8 through 13. ";
+            cin >> row;
+            cout << endl;
+        }
+    }
+    return row;
+}
+
+/** 
+* The seatNumber function determines which seat the user would like to sit in
+* Input validation is used to ensure seats between A-F (in capital letters) are selected
+* 
+* @return - seatNum type which accounts for white space in the character array
+*/
+int seatNumber(){
+    char seat;
+    int selection;
+    cout << "Please enter the seat number you would like A - F. ";
+    cin >> seat; 
+    cout << endl;
+    while(!(seat=='A'||seat=='B'||seat=='C'||seat=='D'||seat=='E'||seat=='F')){
+        cout << "Your selection was invalid. Please enter the seat number you would like A - F. ";
+        cin >> seat;
+        cout << endl;
+    }
+    switch (seat){
+        case 'A': selection = 8;
+        break;
+        case 'B': selection = 10;
+        break;
+        case 'C': selection = 12;
+        break;
+        case 'D': selection = 15;
+        break;
+        case 'E': selection = 17;
+        break;
+        case 'F': selection = 19;
+    }
+    return selection;
+}
+
+/** 
+* The displayLayout function displays the current seating layout of the airplane
+*
+* @param array[][] - the 2D array to be displayed
+*/
+void displayLayout(char array[14][20]){
+    cout << endl << endl;
+    cout << "This program assigns seats for a commercial airplane." << endl;
+    cout << "The current seat availability is as follows: " << endl << endl;
+    for(int i=0;i<14;i++){
+        for(int j =0;j<20;j++){
+            cout << array[i][j];
+        }
+        cout << endl;
+    }
+    cout << "* -- Available seat" << endl;
+    cout << "X -- Occupied seat" << endl << endl;
+    cout << "Rows 1 and 2 are for first class passengers." << endl;
+    cout << "Rows 3 through 7 are for business class passengers." << endl;
+    cout << "Rows 8 through 13 are for economy class passengers." << endl << endl;
+}
+
+/** 
+* The checkSeat function checks if the user selected seat is already occupied
+*
+* @return - a boolean value, true if the seat is already occupied
+*/
+bool checkSeat(char array[14][20],int R, int C){
+    return array[R][C] == 'X';
+}
+
+/** 
+* The updateLayout function places an 'X' where the user wants to sit and...
+* the updated seating plan
+*
+* @param array - the seating plan array to be updated
+* @param R - the row the user wants to sit in
+* @param C - the column the user wants to sit in
+*/
+void updateLayout(char array[14][20],int R, int C){
+array[R][C] = 'X';
+cout << "This seat has been reserved for you" << endl << endl;
+    for(int i=0;i<14;i++){
+        for(int j =0;j<20;j++){
+            cout << array[i][j];
+        }
+    cout << endl;
+    }
+cout << "* -- Available seat" << endl;
+cout << "X -- Occupied seat" << endl << endl;
+}
+
+/** 
+* The seatOccupied function alerts the user that the seat gas already been...
+* booked and re-prints the seating plan.
+*
+* @param array - the current seating plan array
+*/
+void seatOccupied(char array[14][20]){
+    cout << "This seat is already occupied, please try again" << endl;
+    for(int i=0;i<14;i++){
+        for(int j =0;j<20;j++){
+            cout << array[i][j];
+        }
+        cout << endl;
+    }
+    cout << "* -- Available seat" << endl;
+    cout << "X -- Occupied seat" << endl << endl;            
+}

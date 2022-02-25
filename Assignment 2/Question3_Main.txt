@@ -1,0 +1,202 @@
+/*******************************
+***  Assignment 2 Question 3 ***
+********* Main Program *********
+******  by Peter Compton  ******
+*******************************/
+
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include "roman.h"
+
+using namespace std; 
+
+
+// Function Prototypes ----------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+romanType add(romanType, romanType);
+romanType add(romanType, int);
+void printTimesTable(romanType, romanType);
+// ------------------------------------------------------------------------------------------------
+
+
+/** 
+* The main function calls each of the other functions to control the sequence of the program.
+*
+*/
+int main()
+{
+    //default constructor
+    romanType roman1 = romanType();  
+
+    //String Constructor
+    romanType roman2 = romanType("XXIV"); 
+
+    //Integer Constructor
+    romanType roman3 = romanType(33); 
+    
+
+    //Add the rest of the tests to get the outputs as in the example output
+    cout << endl << "Print the roman representation of the values" << endl << "I" << endl << "XXIV" << endl << "XXXIII" << endl << endl;
+    
+    //Test the no parameter constructor
+    cout << "Default romanType constructor with no parameter" << endl;
+    cout << "The defualt romanType variable as a Roman Numeral = "; 
+    roman1.printRoman();
+    cout << endl;
+    cout << "The defualt romanType variable as a integer value = "; 
+    roman1.printPositiveInteger();
+    cout << endl << endl;
+
+    //Test change the romanType value and representation
+    roman1.setRoman(44);  
+    roman1.setRoman("XLIV"); 
+    cout << "Setting the defualt romanType value to 44" << endl;     
+    cout << "The defualt romanType variable as a Roman Numeral = "; 
+    roman1.printRoman();
+    cout << endl;
+    cout << "The defualt romanType variable as a Roman Numeral = "; 
+    roman1.printPositiveInteger();
+    cout << endl << endl; 
+
+    //Check the string constructor for romanType
+    cout << "Get roman numneral and integer using the string constructor" << endl;
+    cout << "The string constructor romanType variable as a Roman Numeral = "; 
+    roman2.printRoman();
+    cout << endl;
+    cout << "The string constructor romanType variable as a integer value = "; 
+    roman2.printPositiveInteger();
+    cout << endl << endl;               
+
+    //Check the value constructor for romanType
+    cout << "Get roman numneral and integer using the integer constructor" << endl;
+    cout << "The integer constructor romanType variable as a Roman Numeral = "; 
+    roman3.printRoman();
+    cout << endl;
+    cout << "The integer constructor romanType variable as a integer value = "; 
+    roman3.printPositiveInteger();
+    cout << endl << endl; 
+
+    //Check the increment and decrement operations
+    cout << "Test the Increment and Decrement methods" << endl;  
+    cout << "Roman Value before calling the Increment method = ";
+    roman3.printRoman();
+    cout << endl;
+    roman3.inc();
+    cout << "The Roman value after calling the Increment method = ";           
+    roman3.printRoman();
+    cout << endl;
+    roman3.dec();
+    cout << "Now the value after calling the Decrement method = ";
+    roman3.printRoman();
+    cout << endl << endl; 
+
+    //use the top level add function to add two romanTypes
+    romanType addTest;
+    addTest = add(roman2, roman3);
+    cout << "Adding 2 romanTypes using top level function" << endl;
+    roman2.printRoman();
+    cout << " + ";
+    roman3.printRoman();
+    cout << " = ";
+    addTest.printRoman();
+    cout << endl << endl; 
+
+    //use the overloaded add methods using an integer and a romanType as param
+    int intAdd = 259;
+    addTest = add(roman2, intAdd);
+    cout << "Adding romanType and integer using top level function" << endl;
+    roman2.printRoman();
+    cout << " + " << intAdd;
+    cout << " = ";
+    addTest.printRoman();
+    cout << endl << endl; 
+
+    //check the class method for the add function with romanType
+    cout << "Using the class method for addition of romanType values " << endl;
+    roman2.printRoman();
+    cout << " + ";
+    roman3.printRoman();
+    cout << " = ";
+    roman2.add(roman3);
+    roman2.printRoman();
+    cout << endl << endl; 
+
+    //check add integer class method to a romanType
+    cout << "Using the overloaded class method for addition of romanType and integer values " << endl;
+    roman3.printRoman();
+    cout << " + 116 = ";
+    roman3.add(116);
+    roman3.printRoman();
+    cout << endl << endl; 
+
+    //check the times table using romanTypes
+    romanType times1 = romanType(6);
+    romanType times2 = romanType(12);
+    cout << "The times table of ";
+    times1.printRoman();
+    cout << " to a multiple of ";
+    times2.printRoman();
+    cout << " is shown below." << endl;
+    printTimesTable(times1,times2);
+
+    return 0;
+}
+
+// Function Area ----------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------
+
+
+/** 
+* The add function adds two romanType values together
+*
+* @param number1 - the first romanType value to be added
+* @param number2 - the second romanType value to be added
+* @return - a romanType value that is the result of the addition
+*/
+romanType add(romanType number1, romanType number2){
+    number1.add(number2);
+    return number1;
+}
+
+
+/**
+* The add function adds a romanType value and an integer value together
+*
+* @param number1 - the romanType value to be added
+* @param number2 - the integer value to be added
+* @return - a romanType value that is the result of the addition
+*/
+romanType add(romanType number1, int addInt){
+    number1.add(addInt);
+    return number1;
+}
+
+
+/**
+* The printTimesTable function calculates and prints a times table
+*
+* @param number1 - the romanType value to be the base value i.e 6 times table
+* @param number2 - the number of muliplications i.e 12 would multiply number1 12 times
+*/
+void printTimesTable(romanType number1, romanType number2){
+    romanType tempNum = romanType("I");
+    romanType temp2 = number1;
+
+    for(int i = 1; i <= number2.getValue(); i++){
+        tempNum.printRoman();
+        for (int j = 0; j < 6 - tempNum.getRoman().length(); j++){
+            cout << " ";
+        }
+        cout << " * ";
+        for (int k = 0; k < 6 - temp2.getRoman().length(); k++){
+            cout << " ";
+        }  
+        temp2.printRoman();
+        cout << "     =     ";
+        number1.printRoman();
+        number1.add(temp2);
+        tempNum.inc();
+        cout << endl;
+    }
+}

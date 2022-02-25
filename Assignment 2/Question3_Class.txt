@@ -1,0 +1,253 @@
+/*******************************
+***  Assignment 2 Question 3 ***
+******  Class Definitions ******
+******  by Peter Compton  ******
+*******************************/
+
+
+#include <iostream> 
+#include <string>
+#include "roman.h"
+ 
+using namespace std;
+
+/** 
+* Default constructor - sets num to 1 and romanNum to "I"
+*
+*/
+romanType::romanType(){
+    setRoman(1); 
+    setRoman("I");
+}
+
+/** 
+* Integer constructor - sets num to the integer value passed and calculates the corresponding
+* Roman numeral which is passed to romanNum
+*/
+romanType::romanType(int intNum){
+    string romanString;
+    setRoman(intNum);
+    romanString = intToRoman(intNum);
+    setRoman(romanString);
+}
+
+/** 
+* String constructor - sets romanNum to the string value passed and calculates the corresponding
+* integer which is passed to num
+*/
+romanType::romanType(string stringNum){
+    setRoman(stringNum);
+    romanToPositiveInteger();
+}
+
+/** 
+* The setRoman function sets both num and romanNum to the value passed, either a string or integer
+*
+* @param stringNum - a string value used to set num and romanNum
+*/
+void romanType::setRoman(string stringNum){
+    romanNum = stringNum;
+    romanToPositiveInteger();
+}
+
+/** 
+* The setRoman function sets both num and romanNum to the value passed, either a string or integer
+*
+* @param intNum - a integer value used to set num and romanNum
+*/
+void romanType::setRoman(int intNum){
+    num = intNum;
+    intToRoman(intNum);
+}
+
+/** 
+* The romanToPositiveInteger function converts a roman numeral to an integer value
+*
+*/
+void romanType::romanToPositiveInteger(){
+    num = 0;
+    for(int i = 0; i < romanNum.length();i++){
+        switch (romanNum[i]){
+            case 'I': 
+                if(romanNum[i+1]=='V'||romanNum[i+1]=='X'){
+                    num -= 1;
+                }
+                else{
+                    num += 1;
+                }
+            break;
+            case 'V': num += 5;
+            break;
+            case 'X': 
+                if(romanNum[i+1]=='L'||romanNum[i+1]=='C'){
+                    num -= 10;
+                }
+                else{
+                    num += 10;
+                }
+            break;
+            case 'L': num += 50;
+            break;
+            case 'C': 
+                if(romanNum[i+1]=='D'||romanNum[i+1]=='M'){
+                    num -= 100;
+                }
+                else{
+                    num += 100;
+                }
+            break;
+            case 'D': num += 500;
+            break;
+            case 'M': num += 1000;
+        }
+    }
+} 
+
+/** 
+* The printPositiveInteger function prints out the value stored in num if num is positive
+*
+*/
+void romanType::printPositiveInteger()const{
+    if (num >=1){
+        cout << num;
+    }
+    else{
+        exit(2);
+    }
+}
+
+/** 
+* The printRoman function prints out the value stored in romanNum
+*
+*/
+void romanType::printRoman(){
+    cout << romanNum;
+}
+
+/** 
+* The getRoman function returns the value in romanNum
+*
+*/
+string romanType::getRoman(){
+    return romanNum;
+}
+
+/** 
+* The getValue function returns the value in num
+*
+*/
+int romanType::getValue(){  //return the roman value as a number
+    return num;
+}
+
+/** 
+* The inc function increases num and romanNum by 1
+*
+*/
+void romanType::inc(){
+    string romanString;
+    num += 1; 
+    romanString = intToRoman(num);
+    setRoman(romanString);
+}
+
+/** 
+* The dec function decreases num and romanNum by 1
+*
+*/
+void romanType::dec(){
+    string romanString;
+    num -= 1; 
+    romanString = intToRoman(num);
+    setRoman(romanString);
+}
+
+/** 
+* The add function adds either two romanType values or a romanType and a integer
+*
+* @param addRoman - the romanType value to be added to an existng romanType value
+*/
+void romanType::add(romanType addRoman){  //add two romanType values. This is working
+   string romanString;
+   num += addRoman.num; 
+   romanString = intToRoman(num);
+   setRoman(romanString);
+}
+
+/** 
+* The add function adds either two romanType values or a romanType and a integer
+*
+* @param addInt - the integer value to be added to an existng romanType value
+*/
+void romanType::add(int addInt){  //Add new integer value to exisitng romanType. This is working
+    string romanString;
+    num += addInt;
+    romanString = intToRoman(num);
+    setRoman(romanString);
+}
+
+/** 
+* The intToRoman function converts an integer value to its Roman Numeral representation
+*
+* @param intNum - the integer value to be converted
+* @return - a string representation of the integer converted to a Roman Numeral
+*/
+string romanType::intToRoman(int intNum){
+    int number = intNum;
+    string intString;
+    while(number != 0){
+        if(number >= 1000){
+            intString.append("M");
+            number -= 1000;
+        }
+        else if(number >= 900){
+            intString.append("CM");
+            number -= 900;
+        }
+        else if(number >= 500){
+            intString.append("D");
+            number -= 500;
+        }
+        else if(number >= 400){
+            intString.append("CD");
+            number -= 400;
+        }
+        else if(number >= 100){
+            intString.append("C");
+            number -= 100;
+        }
+        else if(number >= 90){
+            intString.append("XC");
+            number -= 90;
+        }
+        else if(number >= 50){
+            intString.append("L");
+            number -= 50;
+        }  
+        else if(number >= 40){
+            intString.append("XL");
+            number -= 40;
+        } 
+        else if(number >= 10){
+            intString.append("X");
+            number -= 10;
+        } 
+        else if(number == 9){
+            intString.append("IX");
+            number -= 9;
+        } 
+        else if(number >= 5){
+            intString.append("V");
+            number -= 5;
+        } 
+        else if(number == 4){
+            intString.append("IV");
+            number -= 4;
+        } 
+        else if(number >= 1){
+            intString.append("I");
+            number -= 1;
+        }                       
+    }
+    return intString;
+}
